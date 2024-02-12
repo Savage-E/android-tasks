@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/rectangle_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:text="Rectangle attributes: color - Orange , width - 3.0,  height - 5.0 , perimeter - 16 , area - 15 " />
+
+    <TextView
+        android:id="@+id/circle_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:text="Circle attributes: color - White , radius - 2.0, perimeter - 12.56 , area - 12.56 " />
+
+    <TextView
+        android:id="@+id/triangle_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:text="Triangle attributes: color - Yellow , side one - 4.0, side two - 4.0 , side three - 6.0, perimeter - 14 , area -  7.93 " />
+
+    <TextView
+        android:id="@+id/total_area_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+       />
+
+</LinearLayout>
