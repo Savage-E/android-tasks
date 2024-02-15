@@ -60,26 +60,34 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == READ_REQUEST_CODE && resultCode == RESULT_OK) {
-            val uri = data?.data
-            val inputStream = uri?.let { contentResolver.openInputStream(it) }
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            var line: String?
-            namesList.clear()
-            while (reader.readLine().also { line = it } != null) {
-                namesList.add(line.orEmpty())
-            }
-            val namesString = namesList.joinToString("\n")
-            val textView: TextView = findViewById(R.id.textView)
-            textView.text = namesString
-            reader.close()
+            readFile(data)
         } else if (requestCode == CREATE_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
-            val uri = data?.data
-            val outputStream = uri?.let { contentResolver.openOutputStream(it) }
-            namesList.forEach { name ->
-                outputStream?.write(name.toByteArray())
-                outputStream?.write("\n".toByteArray())
-            }
-            outputStream?.close()
+            writeFile(data)
         }
+    }
+
+    private fun writeFile(data: Intent?) {
+        val uri = data?.data
+        val outputStream = uri?.let { contentResolver.openOutputStream(it) }
+        namesList.forEach { name ->
+            outputStream?.write(name.toByteArray())
+            outputStream?.write("\n".toByteArray())
+        }
+        outputStream?.close()
+    }
+
+    private fun readFile(data: Intent?) {
+        val uri = data?.data
+        val inputStream = uri?.let { contentResolver.openInputStream(it) }
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        var line: String?
+        namesList.clear()
+        while (reader.readLine().also { line = it } != null) {
+            namesList.add(line.orEmpty())
+        }
+        val namesString = namesList.joinToString("\n")
+        val textView: TextView = findViewById(R.id.textView)
+        textView.text = namesString
+        reader.close()
     }
 }
