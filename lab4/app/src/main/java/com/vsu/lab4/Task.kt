@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Task (
-    val id: Long,
+    var id: Long,
     var title: String,
     var description: String,
     var isCompleted: Boolean,
