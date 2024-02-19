@@ -1,8 +1,11 @@
 package com.vsu.lab4
 
 import android.view.LayoutInflater
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
@@ -10,7 +13,8 @@ import java.util.Date
 //import kotlinx.android.synthetic.main.item_todo.view.viewColorTag
 import java.util.Random
 
-class TodoAdapter(val tasks: List<Task>) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+class TaskAdapter(val tasks: MutableList<Task>,private val listener: ItemActionListener) :
+    RecyclerView.Adapter<TaskAdapter.TodoViewHolder>() {
 
     // 3 functions of the view holder
     // 1st func
@@ -21,6 +25,10 @@ class TodoAdapter(val tasks: List<Task>) : RecyclerView.Adapter<TodoAdapter.Todo
                 .inflate(R.layout.item_task, parent, false)
         )
     }
+    interface ItemActionListener {
+        fun onEditAction(task: Task)
+        fun onDeleteAction(task: Task)
+    }
 
     override fun getItemCount() = tasks.size
 
@@ -28,6 +36,47 @@ class TodoAdapter(val tasks: List<Task>) : RecyclerView.Adapter<TodoAdapter.Todo
     // this will set data in each card
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         holder.bind(tasks[position]) // we are passing the object of the list that we made in the ToDoModel.kt
+        val menuIcon = holder.itemView.findViewById<ImageView>(R.id.item_menu)
+        menuIcon.setOnClickListener { view ->
+            val popupMenu = PopupMenu(view.context, view)
+            val inflater: MenuInflater = popupMenu.menuInflater
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.editItm -> {
+                        listener.onEditAction(tasks[position])
+                        // Handle edit action
+                        true
+                    }
+                    R.id.deleteItm -> {
+                        listener.onDeleteAction(tasks[position])
+                        // Handle delete action
+                        true
+                    }
+                    else -> false
+                }
+            }
+            inflater.inflate(R.menu.context_menu    , popupMenu.menu)
+            popupMenu.show()
+        }
+
+    }
+
+    fun getSelectedTask(position: Int): Task {
+        return tasks[position]
+    }
+
+    fun updateTasks(newTasks: List<Task>) {
+        tasks.clear()
+        tasks.addAll(newTasks)
+        notifyDataSetChanged()
+    }
+
+    fun updateTask(updatedTask: Task) {
+        val position = tasks.indexOfFirst { it.id == updatedTask.id }
+        if (position != -1) {
+            tasks[position] = updatedTask
+            notifyItemChanged(position)
+        }
     }
 
     // 3rd func
@@ -49,7 +98,7 @@ class TodoAdapter(val tasks: List<Task>) : RecyclerView.Adapter<TodoAdapter.Todo
                 viewColorTag.setBackgroundColor(randomColor)
                 txtShowTitle.text = task.title
                 txtShowTask.text = task.description
-                txtShowStatus.text = if (task.isCompleted) "In progress" else "Complete"
+                txtShowStatus.text = if (task.isCompleted) "Complete" else "In progress"
                 updateTime(task.deadline.time)
                 updateDate(task.deadline.date)
             }

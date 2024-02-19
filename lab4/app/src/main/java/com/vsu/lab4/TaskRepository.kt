@@ -1,7 +1,20 @@
 package com.vsu.lab4
 
-class TaskRepository {
+
+class TaskRepository private constructor() {
     private val tasks = mutableListOf<Task>()
+
+    companion object {
+        // Singleton instance
+        private var instance: TaskRepository? = null
+
+        fun getInstance(): TaskRepository {
+            if (instance == null) {
+                instance = TaskRepository()
+            }
+            return instance!!
+        }
+    }
 
     fun addTask(task: Task) {
         tasks.add(task)
