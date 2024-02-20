@@ -13,18 +13,16 @@ import java.util.Date
 //import kotlinx.android.synthetic.main.item_todo.view.viewColorTag
 import java.util.Random
 
-class TaskAdapter(val tasks: MutableList<Task>,private val listener: ItemActionListener) :
+class TaskAdapter(val tasks: MutableList<Task>, private val listener: ItemActionListener) :
     RecyclerView.Adapter<TaskAdapter.TodoViewHolder>() {
 
-    // 3 functions of the view holder
-    // 1st func
-    // In this Layout inflatter is called which converts view in such a form that adapter can consume it
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         return TodoViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_task, parent, false)
         )
     }
+
     interface ItemActionListener {
         fun onEditAction(task: Task)
         fun onDeleteAction(task: Task)
@@ -32,10 +30,8 @@ class TaskAdapter(val tasks: MutableList<Task>,private val listener: ItemActionL
 
     override fun getItemCount() = tasks.size
 
-    // 2nd func
-    // this will set data in each card
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
-        holder.bind(tasks[position]) // we are passing the object of the list that we made in the ToDoModel.kt
+        holder.bind(tasks[position])
         val menuIcon = holder.itemView.findViewById<ImageView>(R.id.item_menu)
         menuIcon.setOnClickListener { view ->
             val popupMenu = PopupMenu(view.context, view)
@@ -44,18 +40,18 @@ class TaskAdapter(val tasks: MutableList<Task>,private val listener: ItemActionL
                 when (menuItem.itemId) {
                     R.id.editItm -> {
                         listener.onEditAction(tasks[position])
-                        // Handle edit action
                         true
                     }
+
                     R.id.deleteItm -> {
                         listener.onDeleteAction(tasks[position])
-                        // Handle delete action
                         true
                     }
+
                     else -> false
                 }
             }
-            inflater.inflate(R.menu.context_menu    , popupMenu.menu)
+            inflater.inflate(R.menu.context_menu, popupMenu.menu)
             popupMenu.show()
         }
 
@@ -65,26 +61,24 @@ class TaskAdapter(val tasks: MutableList<Task>,private val listener: ItemActionL
         return tasks[position]
     }
 
-    fun updateTasks(newTasks: List<Task>) {
-        tasks.clear()
-        tasks.addAll(newTasks)
-        notifyDataSetChanged()
-    }
+//    fun updateTasks(newTasks: List<Task>) {
+//        tasks.clear()
+//        tasks.addAll(newTasks)
+//        notifyDataSetChanged()
+//    }
+//
+//    fun updateTask(updatedTask: Task) {
+//        val position = tasks.indexOfFirst { it.id == updatedTask.id }
+//        if (position != -1) {
+//            tasks[position] = updatedTask
+//            notifyItemChanged(position)
+//        }
+//    }
 
-    fun updateTask(updatedTask: Task) {
-        val position = tasks.indexOfFirst { it.id == updatedTask.id }
-        if (position != -1) {
-            tasks[position] = updatedTask
-            notifyItemChanged(position)
-        }
-    }
-
-    // 3rd func
     override fun getItemId(position: Int): Long {
         return tasks[position].id
     }
 
-    // view holder is present inside the recycler view
     class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(task: Task) {
             with(itemView) {
