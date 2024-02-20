@@ -9,27 +9,31 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-
 class MainActivity : AppCompatActivity(), TaskAdapter.ItemActionListener {
-
     val list = arrayListOf<Task>()
     var taskAdapter = TaskAdapter(list, this)
     val taskRepository = TaskRepository.getInstance()
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setupToolbar()
+        setupRecyclerView()
+        initSwipe()
+    }
+
+    private fun setupToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+    }
+
+    private fun setupRecyclerView() {
         val todoRv = findViewById<RecyclerView>(R.id.todoRv)
         todoRv.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = this@MainActivity.taskAdapter
         }
-        initSwipe()
     }
 
     override fun onEditAction(task: Task) {
@@ -46,6 +50,10 @@ class MainActivity : AppCompatActivity(), TaskAdapter.ItemActionListener {
 
     override fun onResume() {
         super.onResume()
+        refreshTasks()
+    }
+
+    private fun refreshTasks() {
         val tasksFromRepo = taskRepository.getAllTasks()
         list.clear()
         list.addAll(tasksFromRepo)
@@ -53,13 +61,8 @@ class MainActivity : AppCompatActivity(), TaskAdapter.ItemActionListener {
     }
 
     private fun initSwipe() {
-        val simpleItemTouchCallback = object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
 

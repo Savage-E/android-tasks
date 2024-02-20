@@ -16,15 +16,11 @@ import java.util.Date
 import kotlin.random.Random
 
 class TaskActivity : AppCompatActivity(), View.OnClickListener {
-
     private val taskRepository = TaskRepository.getInstance()
-
     private var task: Task? = null
     private lateinit var myCalendar: Calendar
-
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private lateinit var timeSetListener: TimePickerDialog.OnTimeSetListener
-
     private var finalDate = 0L
     private var finalTime = 0L
 
@@ -34,7 +30,10 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_task)
 
         task = intent.getParcelableExtra("task")
+        setupViews()
+    }
 
+    private fun setupViews() {
         val dateEdt = findViewById<TextInputEditText>(R.id.dateEdt)
         val timeEdt = findViewById<TextInputEditText>(R.id.timeEdt)
         val saveBtn = findViewById<MaterialButton>(R.id.saveBtn)
@@ -43,16 +42,12 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
         task?.let {
             findViewById<TextInputLayout>(R.id.titleInpLay).editText?.setText(it.title)
             findViewById<TextInputLayout>(R.id.taskInpLay).editText?.setText(it.description)
-
             val dateFormat = SimpleDateFormat("EEE, d MMM yyyy")
             val timeFormat = SimpleDateFormat("h:mm a")
-
             finalDate = it.deadline.date
             finalTime = it.deadline.time
-
             dateEdt.setText(dateFormat.format(Date(finalDate)))
             timeEdt.setText(timeFormat.format(Date(finalTime)))
-
             findViewById<TextInputLayout>(R.id.timeInptLay).visibility = View.VISIBLE
         }
 
@@ -69,7 +64,6 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
             R.id.saveBtn -> saveTodo()
             R.id.cancelBtn -> cancelTodo()
         }
-
     }
 
     private fun saveTodo() {
@@ -85,10 +79,8 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
             newTask.id = task!!.id
             taskRepository.updateTask(newTask)
         }
-
         finish()
     }
-
 
     private fun cancelTodo() {
         finish()
@@ -101,7 +93,6 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
             myCalendar.set(Calendar.MINUTE, min)
             updateTime()
         }
-
         val timePickerDialog = TimePickerDialog(
             this,
             timeSetListener,
@@ -126,7 +117,6 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             updateDate()
         }
-
         val datePickerDialog = DatePickerDialog(
             this,
             dateSetListener,
@@ -144,5 +134,4 @@ class TaskActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<TextInputEditText>(R.id.dateEdt).setText(sdf.format(myCalendar.time))
         findViewById<TextInputLayout>(R.id.timeInptLay).visibility = View.VISIBLE
     }
-
 }
